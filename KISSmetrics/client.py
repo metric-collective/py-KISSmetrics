@@ -2,8 +2,6 @@
 
 import KISSmetrics
 from KISSmetrics import request
-from urllib3 import PoolManager
-
 
 class Client(object):
     """Interface to KISSmetrics tracking service"""
@@ -24,7 +22,6 @@ class Client(object):
         self.key = key
         if trk_scheme not in ('http', 'https'):
             raise ValueError('trk_scheme must be one of (http, https)')
-        self.http = PoolManager()
         self.trk_host = trk_host
         self.trk_scheme = trk_scheme
 
@@ -112,4 +109,5 @@ class Client(object):
         return self._request(this_request)
 
     def _request(self, uri, method='GET'):
-        return self.http.request(method, uri)
+        from google.appengine.api import urlfetch
+        return urlfetch.fetch(uri, method=method)
